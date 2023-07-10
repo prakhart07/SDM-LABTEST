@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>main</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/jquery-1.9.1.min.js"></script> 
+    <script src="js/bootstrap.min.js"></script>                           
+</head>
+    
+<body onload="GetData()">
+    <div class="container">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                    <tr>
+                        <td>
+                            <lable class="label" style="color:black">username</lable>
+                        </td>
+                    
+                        <td>
+                            <label clas="lable" style="color:black">password</label>
+                        </td>
+                        
+            
+                        <td>
+                            <label class="label" style="color: black;">email</label>
+                        </td>
+                        <td>
+                            <label class="label" style="color: black;">age</label>
+                        </td>
+                        <td>
+                            <label class="label" style="color: black;">gender</label>
+                        </td>
+                        <td>
+                            <label class="label" style="color: black;">address</label>
+                        </td>
+                        <td>
+                            <label class="label" style="color: black;">10th</label>
+                        </td>
+                        <td>
+                            <label class="label" style="color: black;">12th</label>
+                        </td>
+                        <td>
+                            <label class="label" style="color: black;">degree</label>
+                        </td>
+                        <td>
+                            <label class="label" style="color: black;">university</label>
+                        </td>
+                   
+                       
+                
+                    
+                   
+                       
+                    </tr>
+            </table>
+        
+          <hr>
+          <div class="alert alert-success" id="div for Msg">
+        </div>
+    </div>
+
+      <hr>
+      <div class="table-responsive">
+        <table class="table table-bordered" id="mytable">
+        </table>
+      </div>
+    </div>
+        <script>
+            var refTomyTable = document.getElementById("mytable");
+            var refTodivForMsg =document.getElementById("div for Msg");
+
+            function GetData()
+            {
+                var helper = new XMLHttpRequest();
+                helper.onreadystatechange=()=>{
+                    if(helper.readyState == 4 && helper.status ==200)
+                    {
+                        var instring = helper.responseText;
+                        var details = JSON.parse(instring);
+                        refTomyTable.innerHTML='';
+                        details.map((detail) =>{
+                            var row = `<tr>
+                                       <td>${detail.username}</td>
+                                       <td>${detail.password}</td>
+                                       <td>${detail.email}</td>
+                                       <td>${detail.age}</td>
+                                       <td>${detail.gender}</td>
+                                       <td>${detail.address}</td>
+                                       <td>${detail.tenth}</td>
+                                       <td>${detail.twelth}</td>
+                                       <td>${detail.degree}</td>
+                                       <td>${detail.university}</td>
+                                       <td>${detail.gender}</td>
+                                       <td>
+                                        <button class="btn btn-danger" onclick="removeRecord(${detail.Eno})">
+                                            Remove</button>
+                                            </td>
+                                        </tr>`
+                            refTomyTable.innerHTML = refTomyTable.innerHTML +row;            
+                        });
+                    }
+                };
+                helper.open("GET","http://127.0.0.1:9999/detail");
+                helper.send();
+            }
+
+            function AddRecord()
+            {   
+                debugger;
+                var refTotxtNo = document.getElementById("txtNo");
+                var refTotxtName = document.getElementById("txtName");
+                var refTotxtAddress = document.getElementById("txtAddress");
+
+                var recordToAdded = {
+                                    "Eno":refTotxtNo.value,
+                                    "Ename":refTotxtName.value,
+                                    "Eaddress":refTotxtAddress.value
+                                    };
+                                    console.log(recordToAdded);
+                var helper = new XMLHttpRequest();
+                helper.onreadystatechange=()=>{
+                    if(helper.readyState==4 && helper.status==200)
+                    {
+                        var instring = helper.responseText;
+                        var details = JSON.parse(instring);
+                        console.log(details);
+                        console.log(instring.affectedRows);
+                        if(instring.affectedRows != undefined &&
+                           instring.affectedRows > 0)
+                           {
+                            ClearBoxes();
+                            setMessage("Record inserted Successfully");
+                            GetData();
+                           }
+                           else{
+                            setMessage("Something Goes Wrong");
+                           }
+                    }
+                };
+                helper.open("POST","http://127.0.0.1:9999/detail");
+                helper.setRequestHeader("content-Type","application/json");
+                helper.send(JSON.stringify(recordToAdded));
+            }
+
+            function ClearBoxes()
+            {
+                debugger;
+                var refTotxtNo=document.getElementById("txtNo");
+                var refTotxtName=document.getElementById("txtName");
+                var refTotxtAddress=document.getElementById("txtAddress");
+                 
+                refTotxtNo.value="";
+                refTotxtName.value="";
+                refTotxtAddress.value="";
+            }
+
+            function removeRecord(Eno)
+            {
+                debugger;
+                console.log(Eno);
+              var helper= new XMLHttpRequest();
+              helper.onreadystatechange=()=>{
+                if(helper.readyState == 4 && helper.status==200)
+                {
+                    var responserec=JSON.parse(helper.responseText)
+                    if(responserec.affectedRows != undefined && 
+                    responserec.affectedRows > 0)
+                        {
+                            setMessage("Record remove Successfully");
+                            GetData();
+                        }
+                        else{
+                            setMessage("Something Is Wrong");
+                        }
+                }
+              };
+                 helper.open("DELETE","http://127.0.0.1:9999/detail/" + Eno);
+                 helper.send();
+            }
+
+            function setMessage(message)
+            {
+                refTodivForMsg.innerHTML = `<h1>${message}</h1>`;
+                setTimeout(() =>{
+                    refTodivForMsg.innerHTML ="";},3000);
+            }
+        </script>
+</body>
+</html>

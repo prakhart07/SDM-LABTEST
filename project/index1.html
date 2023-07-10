@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <title>book1</title>
+</head>
+<body>
+    
+    <div class="container">
+        <form>
+            <div class="mb-3">
+              <label for="Email1" class="form-label">username</label>
+              <input type="email" class="form-control" id="username" aria-describedby="emailHelp">
+              
+            <div class="mb-3">
+              <label for="password" class="form-label">password</label>
+              <input type="password" class="form-control" id="password">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">email</label>
+                <input type="email" class="form-control" id="email">
+              </div>
+              <div class="mb-3">
+                <label for="age" class="form-label">age</label>
+                <input type="number" class="form-control" id="age">
+              </div>
+            <div class="mb-3 form-check">
+                <label for="male" class="form-label">male</label>
+              <input type="checkbox" name="male" id="male">
+
+              <label for="female" class="form-label">female</label>
+              <input type="checkbox" name="female" id="female">
+            </div>
+              <div class="mb-3">
+                <label for="address" class="form-label">address</label>
+                <input type="text" class="form-control" id="address">
+              </div>
+              <div class="mb-3">
+                <label for="tenth" class="form-label">10th</label>
+                <input type="number" class="form-control" id="tenth">
+              </div>
+              <div class="mb-3">
+                <label for="twelth" class="form-label">12th</label>
+                <input type="number" class="form-control" id="twelth">
+              </div>
+              <div class="mb-3">
+                <label for="degree" class="form-label">degree</label>
+                <input type="text" class="form-control" id="degree">
+              </div>
+              <div class="mb-3">
+                <label for="university" class="form-label">university</label>
+                <input type="text" class="form-control" id="university">
+              </div>
+            <button type="submit" class="btn btn-primary" onclick="AddRecord()">Submit</button>
+            <button type="submit" class="btn btn-primary" onclick="./main.html">next</button>
+          </form>
+    </div>
+    
+</body>
+<script>
+    function AddRecord()
+            {   
+                debugger;
+                var refTotxtNo = document.getElementById("username");
+                var refTotxtName = document.getElementById("password");
+                var refTotxtAddress = document.getElementById("email");
+                var refTotxtAddress = document.getElementById("age");
+                var refTotxtAddress = document.getElementById("gender");
+                var refTotxtAddress = document.getElementById("address");
+                var refTotxtAddress = document.getElementById("tenth");
+                var refTotxtAddress = document.getElementById("twelth");
+                var refTotxtAddress = document.getElementById("degree");
+                var refTotxtAddress = document.getElementById("university");
+
+                var recordToAdded = {
+                                    "username":refTotxtNo.value,
+                                    "password":refTotxtName.value,
+                                    "email":refTotxtAddress.value,
+                                    "age":refTotxtAddress.value,
+                                    "gender":refTotxtAddress.value,
+                                    "address":refTotxtAddress.value,
+                                    "tenth":refTotxtAddress.value,
+                                    "twelth":refTotxtAddress.value,
+                                    "degree":refTotxtAddress.value,
+                                    "university":refTotxtAddress.value
+                                    };
+                                    console.log(recordToAdded);
+                var helper = new XMLHttpRequest();
+                helper.onreadystatechange=()=>{
+                    if(helper.readyState==4 && helper.status==200)
+                    {
+                        var instring = helper.responseText;
+                        var details = JSON.parse(instring);
+                        console.log(details);
+                        console.log(instring.affectedRows);
+                        if(instring.affectedRows != undefined &&
+                           instring.affectedRows > 0)
+                           {
+                            ClearBoxes();
+                            setMessage("Record inserted Successfully");
+                            GetData();
+                           }
+                           else{
+                            setMessage("Something Goes Wrong");
+                           }
+                    }
+                };
+                helper.open("POST","http://127.0.0.1:9999/detail");
+                helper.setRequestHeader("content-Type","application/json");
+                helper.send(JSON.stringify(recordToAdded));
+            }
+</script>
+</html>
